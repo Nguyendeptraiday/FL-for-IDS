@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ids-demo"
+version = "1.0.0"
+license = "MIT"
+description = "Demo FL phat hien xam nhap mang (CIC-IDS2017): Random Forest / MLP / XGBoost"
+dependencies = [
+    "flwr[simulation]>=1.35.0",
+    "scikit-learn>=1.5.0",
+    "pandas",
+    "numpy",
+    "torch",
+    "xgboost>=2.0.0"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "student"
+
+[tool.flwr.app.components]
+# ===== CHON 1 TRONG 3 CAP (bo dau # cap muon chay, them # cac cap con lai) =====
+# --- XGBoost ---
+serverapp = "ids_demo.server_app_xgb:app"
+clientapp = "ids_demo.client_app_xgb:app"
+# --- MLP ---
+# serverapp = "ids_demo.server_app_mlp:app"
+# clientapp = "ids_demo.client_app_mlp:app"
+# --- Random Forest ---
+# serverapp = "ids_demo.server_app:app"
+# clientapp = "ids_demo.client_app:app"
+
+[tool.flwr.app.config]
+data-dir = "client_data_non_iid"          # doi thanh "client_data_non_iid" de chay non-IID
+# --- MLP ---
+num-server-rounds = 10
+local-epochs = 2
+lr = 0.001
+# --- Random Forest ---
+rf-trees = 10
+# --- XGBoost ---
+xgb-trees = 50
+xgb-depth = 6
+xgb-eta = 0.1
